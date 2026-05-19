@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tugaspab2noval/models/catatan_model.dart';
 import 'package:tugaspab2noval/models/matakuliah_model.dart';
-import 'package:tugaspab2noval/screens/matakuliah_screen.dart';
+import 'package:tugaspab2noval/screens/matakuliah_screen.dart'; // Perhatikan nama class di dalam file ini
 import 'package:tugaspab2noval/services/firebase_service.dart';
-
 
 class CatatanScreen extends StatefulWidget {
   const CatatanScreen({super.key});
@@ -15,10 +14,10 @@ class CatatanScreen extends StatefulWidget {
 class _CatatanScreenState extends State<CatatanScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   final _formKey = GlobalKey<FormState>();
-  
+
   final _judulController = TextEditingController();
   final _isiController = TextEditingController();
-  
+
   MKModel? _selectedMK;
 
   void _submitNote() async {
@@ -31,7 +30,8 @@ class _CatatanScreenState extends State<CatatanScreen> {
       }
 
       CatatanModel newCatatan = CatatanModel(
-        id: _selectedMK!.id!,
+        id: null,
+        idMK: _selectedMK!.id!,
         namaMK: _selectedMK!.nama,
         judul: _judulController.text.trim(),
         isi: _isiController.text.trim(),
@@ -42,6 +42,7 @@ class _CatatanScreenState extends State<CatatanScreen> {
 
       _judulController.clear();
       _isiController.clear();
+
       setState(() {
         _selectedMK = null;
       });
@@ -70,9 +71,11 @@ class _CatatanScreenState extends State<CatatanScreen> {
             tooltip: 'Kelola Mata Kuliah',
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CourseScreen()),
+              MaterialPageRoute(
+                builder: (context) => const MatakuliahScreen(),
+              ),
             ),
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -84,14 +87,17 @@ class _CatatanScreenState extends State<CatatanScreen> {
               child: Column(
                 children: [
                   StreamBuilder<List<MKModel>>(
-                    stream: _firebaseService.getMKs(),
+                    stream: _firebaseService.getMKs(), // Pastikan nama method ini ada di firebase_service.dart
                     builder: (context, snapshot) {
                       List<MKModel> courses = snapshot.data ?? [];
+
                       return DropdownButtonFormField<MKModel>(
                         value: _selectedMK,
                         hint: const Text('Pilih Mata Kuliah'),
                         isExpanded: true,
-                        decoration: const InputDecoration(border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
                         items: courses.map((MKModel course) {
                           return DropdownMenuItem<MKModel>(
                             value: course,
@@ -103,87 +109,56 @@ class _CatatanScreenState extends State<CatatanScreen> {
                             _selectedMK = value;
                           });
                         },
-                        validator: (value) => value == null ? 'Mata kuliah wajib dipilih' : null,
+                        validator: (value) =>
+                            value == null ? 'Mata kuliah wajib dipilih' : null,
                       );
                     },
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _judulController,
-                    decoration: const InputDecoration(labelText: 'Judul Catatan', border: OutlineInputBorder()),
-                    validator: (val) => val!.isEmpty ? 'Judul tidak boleh kosong' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Judul Catatan',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (val) =>
+                        val!.isEmpty ? 'Judul tidak boleh kosong' : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _isiController,
                     maxLines: 3,
-                    decoration: const InputDecoration(labelText: 'Isi Catatan', border: OutlineInputBorder()),
-                    validator: (val) => val!.isEmpty ? 'Isi catatan tidak boleh kosong' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Isi Catatan',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (val) =>
+                        val!.isEmpty ? 'Isi catatan tidak boleh kosong' : null,
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: _submitNote,
                     icon: const Icon(Icons.save),
                     label: const Text('Simpan Catatan'),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white, minimumSize: const Size.fromHeight(50)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                    ),
                   ),
                 ],
-              ),
-            ),
-            const Divider(height: 32),
-            const Text('Daftar Catatan Kuliah', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Expanded(
-              child: StreamBuilder<List<CatatanModel>>(
-                stream: _firebaseService.getCatatan(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Belum ada catatan kuliah.'));
-                  }
-
-                  final notes = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: notes.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        elevation: 2,
-                        child: ListTile(
-                          title: Text(notes[index].judul, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 4),
-                              Text(notes[index].isi),
-                              const Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Chip(
-                                    label: Text(notes[index].namaMK, style: const TextStyle(fontSize: 11)),
-                                    backgroundColor: Colors.teal.withOpacity(0.1),
-                                  ),
-                                  Text(
-                                    _formatTimestamp(notes[index].timestamp),
-                                    style: const TextStyle(fontSize: 11, color: Colors.grey),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
+              ),           
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _judulController.dispose();
+    _isiController.dispose();
+    super.dispose();
   }
 }

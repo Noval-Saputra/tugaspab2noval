@@ -4,14 +4,14 @@ import 'package:tugaspab2noval/services/firebase_service.dart';
 
 
 
-class CourseScreen extends StatefulWidget {
-  const CourseScreen({super.key});
+class MatakuliahScreen extends StatefulWidget {
+  const MatakuliahScreen({super.key});
 
   @override
-  State<CourseScreen> createState() => _CourseScreenState();
+  State<MatakuliahScreen> createState() => _MatakuliahScreenState();
 }
 
-class _CourseScreenState extends State<CourseScreen> {
+class _MatakuliahScreenState extends State<MatakuliahScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   final _formKey = GlobalKey<FormState>();
   final _namaController = TextEditingController();
