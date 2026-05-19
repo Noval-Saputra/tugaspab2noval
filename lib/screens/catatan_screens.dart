@@ -116,7 +116,7 @@ class _CatatanScreensState extends State<CatatanScreens> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF5E35B1),
+        backgroundColor: const Color.fromARGB(255, 181, 184, 50),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -211,7 +211,7 @@ class _CatatanScreensState extends State<CatatanScreens> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF5E35B1), width: 2),
+                    borderSide: const BorderSide(color: Color.fromARGB(255, 211, 201, 60), width: 2),
                   ),
                 ),
                 maxLines: 1,

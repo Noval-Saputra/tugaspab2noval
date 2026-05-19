@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF5E35B1)),
+                valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 187, 146, 33)),
               ),
             );
           }
