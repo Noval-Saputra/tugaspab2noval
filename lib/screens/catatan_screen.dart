@@ -18,6 +18,7 @@ class _CatatanScreenState extends State<CatatanScreen> {
   final _judulController = TextEditingController();
   final _isiController = TextEditingController();
 
+  String? _selectedMKId;
   MKModel? _selectedMK;
 
   void _submitNote() async {
@@ -44,6 +45,7 @@ class _CatatanScreenState extends State<CatatanScreen> {
       _isiController.clear();
 
       setState(() {
+        _selectedMKId = null;
         _selectedMK = null;
       });
 
@@ -91,22 +93,29 @@ class _CatatanScreenState extends State<CatatanScreen> {
                     builder: (context, snapshot) {
                       List<MKModel> courses = snapshot.data ?? [];
 
-                      return DropdownButtonFormField<MKModel>(
-                        value: _selectedMK,
+                      return DropdownButtonFormField<String?>(
+                        value: _selectedMKId,
                         hint: const Text('Pilih Mata Kuliah'),
                         isExpanded: true,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                         ),
                         items: courses.map((MKModel course) {
-                          return DropdownMenuItem<MKModel>(
-                            value: course,
+                          return DropdownMenuItem<String?>(
+                            value: course.id,
                             child: Text(course.nama),
                           );
                         }).toList(),
-                        onChanged: (MKModel? value) {
+                        onChanged: (String? value) {
                           setState(() {
-                            _selectedMK = value;
+                            _selectedMKId = value;
+                            if (value != null) {
+                              _selectedMK = courses.firstWhere(
+                                (course) => course.id == value,
+                              );
+                            } else {
+                              _selectedMK = null;
+                            }
                           });
                         },
                         validator: (value) =>
@@ -147,7 +156,70 @@ class _CatatanScreenState extends State<CatatanScreen> {
                     ),
                   ),
                 ],
-              ),           
+              ),
+            ),
+            const Divider(height: 32),
+            const Text(
+              'Daftar Catatan Kuliah',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: StreamBuilder<List<CatatanModel>>(
+                stream: _firebaseService.getCatatan(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('Belum ada catatan kuliah.'));
+                  }
+
+                  final notes = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: notes.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        elevation: 2,
+                        child: ListTile(
+                          title: Text(
+                            notes[index].judul,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(notes[index].isi),
+                              const Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Chip(
+                                    label: Text(
+                                      notes[index].namaMK,
+                                      style: const TextStyle(fontSize: 11),
+                                    ),
+                                    backgroundColor: Colors.teal.withOpacity(0.1),
+                                  ),
+                                  Text(
+                                    _formatTimestamp(notes[index].timestamp),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
