@@ -5,11 +5,8 @@ import 'package:tugaspab2noval/models/matakuliah_models.dart';
 class FirebaseService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
-  // References
   DatabaseReference get coursesRef => _database.ref('courses');
   DatabaseReference get notesRef => _database.ref('notes');
-
-  // ============ COURSES (MATA KULIAH) ============
 
   /// Create new mata kuliah
   Future<void> createCourse(MataKuliah course) async {
