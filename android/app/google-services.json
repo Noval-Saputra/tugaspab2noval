@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "349096357661",
+    "firebase_url": "https://tugaspab2noval-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tugaspab2noval",
+    "storage_bucket": "tugaspab2noval.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349096357661:android:2f05f6ce547903ee6ebbf4",
+        "android_client_info": {
+          "package_name": "com.example.tugaspab2noval"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGGIOx0dD_jW52g4X8NXwGRa3-acugSaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
