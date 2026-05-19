@@ -75,7 +75,7 @@ class _CourseScreenState extends State<CourseScreen> {
             const SizedBox(height: 10),
             Expanded(
               child: StreamBuilder<List<MKModel>>(
-                stream: _firebaseService.getCourses(),
+                stream: _firebaseService.getMKs(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -91,8 +91,8 @@ class _CourseScreenState extends State<CourseScreen> {
                       return Card(
                         child: ListTile(
                           leading: const Icon(Icons.book, color: Colors.blue),
-                          title: Text(courses[index].name),
-                          subtitle: Text('Dosen: ${courses[index].lecturer}'),
+                          title: Text(courses[index].nama),
+                          subtitle: Text('Dosen: ${courses[index].dosen}'),
                         ),
                       );
                     },

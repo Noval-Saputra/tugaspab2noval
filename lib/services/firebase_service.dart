@@ -27,25 +27,25 @@ class FirebaseService {
   }
 
   // create Catatan
-  Future<void> addCatatan(CatatanModel note) async {
-    await _dbRef.child('notes').push().set(note.toMap());
+  Future<void> addCatatan(CatatanModel catatan) async {
+    await _dbRef.child('catatan').push().set(catatan.toMap());
   }
 
   // retrieve Catatan 
-  Stream<List<CatatanModel>> getNotes() {
-    return _dbRef.child('notes').onValue.map((event) {
+  Stream<List<CatatanModel>> getCatatan() {
+    return _dbRef.child('catatan').onValue.map((event) {
       final Map<dynamic, dynamic>? snapshotValue = event.snapshot.value as Map<dynamic, dynamic>?;
-      List<CatatanModel> notes = [];
+      List<CatatanModel> catatan = [];
       if (snapshotValue != null) {
         snapshotValue.forEach((key, value) {
-          notes.add(CatatanModel.fromMap(
+          catatan.add(CatatanModel.fromMap(
             key,
             value));
         });
       }
 
-      notes.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      return notes;
+      catatan.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      return catatan;
     });
   }
 }

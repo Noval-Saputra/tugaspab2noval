@@ -90,4 +90,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'tugaspab2noval.firebasestorage.app',
     measurementId: 'G-3D7H3GP579',
   );
+
 }
